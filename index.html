@@ -891,7 +891,7 @@
         var unicorn = confetti.shapeFromText({ text: '🦄', scalar });
 
         var defaults = {
-          particleCount: 10,
+          particleCount: 20,
           angle: 120,
           spread: 50,
           origin: { x: 1, y: 0.6 },
@@ -900,7 +900,8 @@
           zIndex: 1000,
           flat: true,
           rotate: true,
-          rotationSpeed: 1,
+          rotationSpeed: 3,
+          fadeStart: 0.5,
         };
 
         function shoot() {
@@ -910,8 +911,6 @@
         }
 
         setTimeout(shoot, 0);
-        setTimeout(shoot, 100);
-        setTimeout(shoot, 200);
       }
     };
 

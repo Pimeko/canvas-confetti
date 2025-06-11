@@ -248,7 +248,8 @@
     disableForReducedMotion: false,
     scalar: 1,
     rotate: false,
-    rotationSpeed: null
+    rotationSpeed: null,
+    fadeStart: 0,
   };
 
   function convert(val, transform) {
@@ -367,6 +368,7 @@
       scalar: opts.scalar,
       flat: opts.flat,
       rotate: opts.rotate,
+      fadeStart: opts.fadeStart,
     };
   }
 
@@ -399,13 +401,15 @@
     }
 
     var progress = (fetti.tick++) / fetti.totalTicks;
+    var fadeProgress = Math.max(0, (progress - fetti.fadeStart) / (1 - fetti.fadeStart));
+    var alpha = Math.max(0, 1 - fadeProgress);
 
     var x1 = fetti.x + (fetti.random * fetti.tiltCos);
     var y1 = fetti.y + (fetti.random * fetti.tiltSin);
     var x2 = fetti.wobbleX + (fetti.random * fetti.tiltCos);
     var y2 = fetti.wobbleY + (fetti.random * fetti.tiltSin);
 
-    context.fillStyle = 'rgba(' + fetti.color.r + ', ' + fetti.color.g + ', ' + fetti.color.b + ', ' + (1 - progress) + ')';
+    context.fillStyle = 'rgba(' + fetti.color.r + ', ' + fetti.color.g + ', ' + fetti.color.b + ', ' + alpha + ')';
 
     context.beginPath();
 
@@ -441,7 +445,7 @@
       var pattern = context.createPattern(bitmapMapper.transform(fetti.shape.bitmap), 'no-repeat');
       pattern.setTransform(matrix);
 
-      context.globalAlpha = (1 - progress);
+      context.globalAlpha = alpha;
       context.fillStyle = pattern;
       context.fillRect(
         fetti.x - (width / 2),
@@ -580,6 +584,7 @@
       var flat = !!prop(options, 'flat');
       var rotate = !!prop(options, 'rotate');
       var rotationSpeed = prop(options, 'rotationSpeed', Number);
+      var fadeStart = prop(options, 'fadeStart', Number);
       var origin = getOrigin(options);
 
       var temp = particleCount;
@@ -605,7 +610,8 @@
             scalar: scalar,
             flat: flat,
             rotate: rotate,
-            rotationSpeed: rotationSpeed
+            rotationSpeed: rotationSpeed,
+            fadeStart: fadeStart
           })
         );
       }
