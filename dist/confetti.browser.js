@@ -1,4 +1,4 @@
-// canvas-confetti v1.9.3 built on 2025-06-11T18:50:29.186Z
+// canvas-confetti v1.9.3 built on 2025-06-11T18:52:14.173Z
 !(function (window, module) {
 // source content
 /* globals Map */
@@ -361,7 +361,7 @@
       drift: opts.drift,
       random: Math.random() + 2,
       rotationDirection: Math.random() > 0.5 ? -1 : 1,
-      rotationSpeed: opts.rotationSpeed ?? (Math.random() * 0.1 + 0.05),
+      rotationSpeed: opts.rotationSpeed !== undefined ? opts.rotationSpeed : (Math.random() * 0.1 + 0.05),
       tiltSin: 0,
       tiltCos: 0,
       wobbleX: 0,

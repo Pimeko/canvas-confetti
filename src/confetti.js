@@ -358,7 +358,7 @@
       drift: opts.drift,
       random: Math.random() + 2,
       rotationDirection: Math.random() > 0.5 ? -1 : 1,
-      rotationSpeed: opts.rotationSpeed ?? (Math.random() * 0.1 + 0.05),
+      rotationSpeed: opts.rotationSpeed !== undefined ? opts.rotationSpeed : (Math.random() * 0.1 + 0.05),
       tiltSin: 0,
       tiltCos: 0,
       wobbleX: 0,
