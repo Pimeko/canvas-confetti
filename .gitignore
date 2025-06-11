@@ -39,7 +39,7 @@ coverage/
 
 # project-specific stuff
 shots/
-dist/
+#dist/
 temp/
 
 *.tgz
