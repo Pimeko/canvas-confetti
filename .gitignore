@@ -41,3 +41,5 @@ coverage/
 shots/
 dist/
 temp/
+
+*.tgz

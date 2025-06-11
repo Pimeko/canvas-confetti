@@ -33,7 +33,7 @@
     return true;
   })();
 
-  function noop() {}
+  function noop() { }
 
   // create a promise if it exists, otherwise, just
   // call the function directly
@@ -57,7 +57,7 @@
     // a performant manner, but also not store them forever so that we don't
     // have a memory leak
     return {
-      transform: function(bitmap) {
+      transform: function (bitmap) {
         if (skipTransform) {
           return bitmap;
         }
@@ -162,7 +162,7 @@
           worker.addEventListener('message', workerDone);
           execute(options, id);
 
-          resolves[id] = workerDone.bind(null, { data: { callback: id }});
+          resolves[id] = workerDone.bind(null, { data: { callback: id } });
         });
 
         return prom;
@@ -246,7 +246,9 @@
     ],
     // probably should be true, but back-compat
     disableForReducedMotion: false,
-    scalar: 1
+    scalar: 1,
+    rotate: false,
+    rotationSpeed: null
   };
 
   function convert(val, transform) {
@@ -264,7 +266,7 @@
     );
   }
 
-  function onlyPositiveInt(number){
+  function onlyPositiveInt(number) {
     return number < 0 ? 0 : Math.floor(number);
   }
 
@@ -285,13 +287,13 @@
     var val = String(str).replace(/[^0-9a-f]/gi, '');
 
     if (val.length < 6) {
-        val = val[0]+val[0]+val[1]+val[1]+val[2]+val[2];
+      val = val[0] + val[0] + val[1] + val[1] + val[2] + val[2];
     }
 
     return {
-      r: toDecimal(val.substring(0,2)),
-      g: toDecimal(val.substring(2,4)),
-      b: toDecimal(val.substring(4,6))
+      r: toDecimal(val.substring(0, 2)),
+      g: toDecimal(val.substring(2, 4)),
+      b: toDecimal(val.substring(4, 6))
     };
   }
 
@@ -354,6 +356,8 @@
       decay: opts.decay,
       drift: opts.drift,
       random: Math.random() + 2,
+      rotationDirection: Math.random() > 0.5 ? -1 : 1,
+      rotationSpeed: opts.rotationSpeed ?? (Math.random() * 0.1 + 0.05),
       tiltSin: 0,
       tiltCos: 0,
       wobbleX: 0,
@@ -361,7 +365,8 @@
       gravity: opts.gravity * 3,
       ovalScalar: 0.6,
       scalar: opts.scalar,
-      flat: opts.flat
+      flat: opts.flat,
+      rotate: opts.rotate,
     };
   }
 
@@ -371,7 +376,11 @@
     fetti.velocity *= fetti.decay;
 
     if (fetti.flat) {
-      fetti.wobble = 0;
+      if (fetti.rotate) {
+        fetti.wobble += fetti.rotationSpeed * fetti.rotationDirection * fetti.wobbleSpeed;
+      } else {
+        fetti.wobble = 0;
+      }
       fetti.wobbleX = fetti.x + (10 * fetti.scalar);
       fetti.wobbleY = fetti.y + (10 * fetti.scalar);
 
@@ -569,6 +578,8 @@
       var shapes = prop(options, 'shapes');
       var scalar = prop(options, 'scalar');
       var flat = !!prop(options, 'flat');
+      var rotate = !!prop(options, 'rotate');
+      var rotationSpeed = prop(options, 'rotationSpeed', Number);
       var origin = getOrigin(options);
 
       var temp = particleCount;
@@ -592,7 +603,9 @@
             gravity: gravity,
             drift: drift,
             scalar: scalar,
-            flat: flat
+            flat: flat,
+            rotate: rotate,
+            rotationSpeed: rotationSpeed
           })
         );
       }
@@ -603,7 +616,7 @@
         return animationObj.addFettis(fettis);
       }
 
-      animationObj = animate(canvas, fettis, resizer, size , done);
+      animationObj = animate(canvas, fettis, resizer, size, done);
 
       return animationObj.promise;
     }
@@ -684,7 +697,7 @@
 
         if (isLibCanvas && canvas) {
           if (document.body.contains(canvas)) {
-            document.body.removeChild(canvas); 
+            document.body.removeChild(canvas);
           }
           canvas = null;
           initialized = false;
@@ -789,12 +802,12 @@
       height = maxY - minY;
 
       var maxDesiredSize = 10;
-      var scale = Math.min(maxDesiredSize/width, maxDesiredSize/height);
+      var scale = Math.min(maxDesiredSize / width, maxDesiredSize / height);
 
       matrix = [
         scale, 0, 0, scale,
-        -Math.round((width/2) + minX) * scale,
-        -Math.round((height/2) + minY) * scale
+        -Math.round((width / 2) + minX) * scale,
+        -Math.round((height / 2) + minY) * scale
       ];
     }
 
@@ -807,10 +820,10 @@
 
   function shapeFromText(textData) {
     var text,
-        scalar = 1,
-        color = '#000000',
-        // see https://nolanlawson.com/2022/04/08/the-struggle-of-using-native-emoji-on-the-web/
-        fontFamily = '"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "EmojiOne Color", "Android Emoji", "Twemoji Mozilla", "system emoji", sans-serif';
+      scalar = 1,
+      color = '#000000',
+      // see https://nolanlawson.com/2022/04/08/the-struggle-of-using-native-emoji-on-the-web/
+      fontFamily = '"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "EmojiOne Color", "Android Emoji", "Twemoji Mozilla", "system emoji", sans-serif';
 
     if (typeof textData === 'string') {
       text = textData;
@@ -857,10 +870,10 @@
     };
   }
 
-  module.exports = function() {
+  module.exports = function () {
     return getDefaultFire().apply(this, arguments);
   };
-  module.exports.reset = function() {
+  module.exports.reset = function () {
     getDefaultFire().reset();
   };
   module.exports.create = confettiCannon;
