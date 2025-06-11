@@ -1,4 +1,4 @@
-// canvas-confetti v1.9.3 built on 2025-06-11T18:36:09.656Z
+// canvas-confetti v1.9.3 built on 2025-06-11T18:50:29.186Z
 !(function (window, module) {
 // source content
 /* globals Map */
